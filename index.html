@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مخزونك | نظام إدارة المخزون</title>
+<style>
+:root{--navy:#0f1b31;--blue:#2563eb;--bg:#f3f6fb;--text:#182338;--muted:#6b7890;--white:#fff;--line:#e7ebf2}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--text)}
+.app{display:flex;min-height:100vh}.side{width:245px;background:linear-gradient(180deg,#101c31,#0b1425);color:#fff;padding:18px 14px;position:fixed;right:0;top:0;bottom:0}
+.brand{font-size:25px;font-weight:800;padding:10px 12px 24px}.brand span{display:block;font-size:11px;color:#aab5c9;font-weight:500;margin-top:3px}
+.user{background:#172640;border:1px solid #273957;border-radius:14px;padding:12px;margin-bottom:16px}.user b{display:block}.user small{color:#aeb9ca}
+.menu button{width:100%;border:0;background:transparent;color:#dbe4f3;padding:12px;border-radius:11px;text-align:right;font-size:15px;margin:3px 0;cursor:pointer}.menu button.active,.menu button:hover{background:#2563eb;color:#fff}
+.help{position:absolute;bottom:18px;left:14px;right:14px;background:#172640;border:1px solid #273957;border-radius:14px;padding:15px;font-size:13px}.help button{margin-top:10px;width:100%;border:0;border-radius:9px;padding:9px;background:#2b4167;color:white}
+.main{margin-right:245px;width:calc(100% - 245px);padding:24px;max-width:1500px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.top h1{margin:0;font-size:25px}.top small{color:var(--muted)}
+.search{background:white;border:1px solid var(--line);border-radius:12px;padding:11px 15px;width:300px}
+.page{display:none}.page.active{display:block}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;box-shadow:0 5px 18px #16213a0a}.label{color:var(--muted);font-size:13px}.num{font-size:28px;font-weight:800;margin:8px 0}.sub{font-size:12px;color:#64748b}.actions{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0}.actions button,.primary{border:0;border-radius:11px;padding:12px;font-weight:700;color:white;cursor:pointer;background:var(--blue)}
+.actions button:nth-child(2){background:#16a34a}.actions button:nth-child(3){background:#7c3aed}.actions button:nth-child(4){background:#f59e0b}.actions button:nth-child(5){background:#475569}
+.grid{display:grid;grid-template-columns:1.25fr 1fr;gap:15px}.panel{background:#fff;border:1px solid var(--line);border-radius:15px;padding:17px;overflow:auto}.panel h3{margin:0 0 14px}.panelhead{display:flex;justify-content:space-between}.link{color:var(--blue);font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:11px 8px;border-bottom:1px solid #eef1f5;text-align:right;white-space:nowrap}th{color:#66748a;background:#f8fafc}.badge{padding:4px 9px;border-radius:20px;font-size:11px;background:#fee2e2;color:#b91c1c}.badge.ok{background:#dcfce7;color:#166534}.alert{background:#fff7df;border:1px solid #f4d98b;padding:10px;border-radius:10px;margin:8px 0}
+.form{background:#fff;border:1px solid var(--line);border-radius:15px;padding:18px;max-width:850px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:13px;color:#64748b}input,select{width:100%;padding:12px;margin:6px 0 13px;border:1px solid #dbe1ea;border-radius:9px;background:#fff}.danger{background:#dc2626!important}
+@media(max-width:900px){.side{width:78px}.brand span,.user b,.user small,.menu button span,.help{display:none}.main{margin-right:78px;width:calc(100% - 78px);padding:14px}.cards{grid-template-columns:repeat(2,1fr)}.actions{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.search{width:180px}}
+@media(max-width:560px){.menu button:nth-child(n+6){display:none}.top{gap:10px;align-items:flex-start}.search{display:none}.cards{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.main{padding:10px}.num{font-size:23px}}
+</style>
+
+<style>
+@media(max-width:600px){
+  .app{display:flex;flex-direction:column;min-height:100vh}
+  .side{position:fixed;right:0;left:0;top:auto;bottom:0;width:100%;height:72px;padding:6px 8px;z-index:20;background:#0f1b31;border-top:1px solid #243654}
+  .brand,.user,.help{display:none!important}
+  .menu{display:flex;justify-content:space-around;align-items:center;height:100%;gap:2px}
+  .menu button{width:auto;flex:1;height:58px;margin:0;padding:5px 2px;text-align:center;font-size:21px;border-radius:10px}
+  .menu button span{display:block!important;font-size:9px;margin-top:2px}
+  .main{margin:0!important;width:100%!important;max-width:none;padding:14px 12px 24px!important;order:1}
+  .top{margin-bottom:15px}
+  .top h1{font-size:24px}
+  .top small{font-size:11px}
+  .cards{grid-template-columns:1fr 1fr;gap:10px}
+  .card{padding:13px 10px;min-height:118px}
+  .num{font-size:25px}
+  .actions{grid-template-columns:1fr 1fr;gap:9px}
+  .actions button{padding:13px 6px;font-size:13px}
+  .actions button:last-child{grid-column:1/-1}
+  .grid{grid-template-columns:1fr;gap:10px}
+  .panel{padding:13px}
+  footer{display:none!important}
+}
+</style>
+
+<style>
+@media(max-width:600px){
+  body{padding-bottom:0}
+  .main{padding-bottom:24px!important}
+  .page.active{padding-bottom:24px}
+  .panel:last-child{margin-bottom:20px}
+  .side{height:78px;padding-bottom:max(6px,env(safe-area-inset-bottom))}
+  .menu{height:64px}
+  .menu button{height:60px}
+}
+</style>
+
+<style>
+@media print{
+  body>*:not(#invoiceModal){display:none!important}
+  #invoiceModal{display:block!important;position:static!important;background:white!important;padding:0!important}
+  #invoiceModal>div{box-shadow:none!important;margin:0!important;max-width:none!important}
+  #invoiceModal button{display:none!important}
+}
+</style>
+
+<style>
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#0f1b31,#2563eb);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.loginBox{width:min(420px,100%);background:#fff;border-radius:22px;padding:28px;box-shadow:0 20px 60px #0004;text-align:right}
+.loginBox h1{margin:0 0 5px;font-size:30px}.loginBox p{color:#667085;margin-top:0}
+.loginBox .loginBtn{width:100%;border:0;border-radius:12px;background:#2563eb;color:#fff;padding:14px;font-size:16px;font-weight:800}
+#loginError{color:#dc2626;font-size:13px;min-height:20px;margin:8px 0}
+.userBadge{font-size:12px;color:#64748b;margin-top:5px}
+.logoutBtn{border:0;background:#eef2f7;border-radius:8px;padding:7px 10px;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="loginScreen">
+  <div class="loginBox">
+    <h1>مخزونك</h1>
+    <p>تسجيل الدخول إلى نظام إدارة المخزون</p>
+    <label>المستخدم</label>
+    <select id="loginUser">
+      <option value="admin">مدير النظام</option>
+      <option value="cashier">موظف المبيعات</option>
+    </select>
+    <label>كلمة المرور التجريبية</label>
+    <input id="loginPass" type="password" placeholder="••••">
+    <div id="loginError"></div>
+    <button class="loginBtn" onclick="login()">دخول</button>
+    <small style="display:block;margin-top:12px;color:#667085">نسخة تجريبية محلية — البيانات محفوظة على هذا الجهاز.</small>
+  </div>
+</div>
+
+<div class="app">
+<aside class="side">
+<div class="brand">مخزونك<span>إدارة المخزون والمبيعات</span></div>
+<div class="user"><b id="loggedUser">إياد ناصر</b><small id="loggedRole">مدير النظام</small><div style="margin-top:8px"><button class="logoutBtn" onclick="logout()">تسجيل الخروج</button></div></div>
+<div class="menu">
+<button class="active" onclick="show('home',this)">⌂ <span>الرئيسية</span></button>
+<button onclick="show('products',this)">▣ <span>المنتجات والمخزون</span></button>
+<button onclick="show('sales',this)">▤ <span>المبيعات</span></button>
+<button onclick="show('purchases',this)">🛒 <span>المشتريات</span></button>
+<button onclick="show('customers',this)">♙ <span>العملاء</span></button>
+<button onclick="show('suppliers',this)">♙ <span>الموردون</span></button>
+<button onclick="show('reports',this)">▥ <span>التقارير</span></button>
+</div>
+<div class="help">تحتاج مساعدة؟<button>تواصل معنا</button></div>
+</aside>
+<main class="main">
+<div class="top"><div><h1 id="title">لوحة التحكم</h1><small>نظرة سريعة على أداء محلك اليوم</small></div><input class="search" placeholder="🔎  ابحث عن منتج..." oninput="filterProducts(this.value)"></div>
+
+<section id="home" class="page active">
+<div class="cards">
+<div class="card"><div class="label">إجمالي المنتجات</div><div class="num" id="nProducts">0</div><div class="sub">منتج مسجل</div></div>
+<div class="card"><div class="label">مبيعات اليوم</div><div class="num" id="nSales">0 د.أ</div><div class="sub">إجمالي المبيعات</div></div>
+<div class="card"><div class="label">قيمة المخزون</div><div class="num" id="nValue">0 د.أ</div><div class="sub">بسعر الشراء</div></div>
+<div class="card"><div class="label">منخفض المخزون</div><div class="num" id="nLow">0</div><div class="sub">يحتاج متابعة</div></div>
+</div>
+<div class="actions"><button onclick="show('products')">＋ إضافة منتج</button><button onclick="show('sales')">▣ بيع جديد</button><button onclick="show('purchases')">🛒 شراء جديد</button><button onclick="show('customers')">♙ إضافة عميل</button><button onclick="show('suppliers')">🚚 إضافة مورد</button></div>
+<div class="grid">
+<div class="panel"><div class="panelhead"><h3>أحدث المبيعات</h3><span class="link">عرض الكل</span></div><div id="recentSales"></div></div>
+<div class="panel"><h3>حركة المبيعات (آخر 7 أيام)</h3>
+<svg viewBox="0 0 520 220" width="100%" height="220" role="img" aria-label="حركة المبيعات">
+<line x1="45" y1="20" x2="45" y2="185" stroke="#dbe3ef"/><line x1="45" y1="185" x2="500" y2="185" stroke="#dbe3ef"/>
+<line x1="45" y1="145" x2="500" y2="145" stroke="#eef2f7"/><line x1="45" y1="105" x2="500" y2="105" stroke="#eef2f7"/><line x1="45" y1="65" x2="500" y2="65" stroke="#eef2f7"/>
+<polyline points="60,140 125,115 190,125 255,78 320,95 385,45 450,88" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+<g fill="#2563eb"><circle cx="60" cy="140" r="5"/><circle cx="125" cy="115" r="5"/><circle cx="190" cy="125" r="5"/><circle cx="255" cy="78" r="5"/><circle cx="320" cy="95" r="5"/><circle cx="385" cy="45" r="5"/><circle cx="450" cy="88" r="5"/></g>
+<g fill="#718096" font-size="11"><text x="52" y="207">16-09</text><text x="117" y="207">17-09</text><text x="182" y="207">18-09</text><text x="247" y="207">19-09</text><text x="312" y="207">20-09</text><text x="377" y="207">21-09</text><text x="442" y="207">22-09</text></g>
+</svg>
+</div>
+</div>
+<div class="grid" style="margin-top:15px">
+<div class="panel"><div class="panelhead"><h3>أقل المنتجات في المخزون</h3><span class="link">عرض الكل</span></div><div id="lowTable"></div></div>
+<div class="panel"><h3>توزيع المنتجات حسب الفئة</h3>
+<div style="display:flex;align-items:center;gap:24px;justify-content:center;padding:15px">
+<svg viewBox="0 0 200 200" width="180" height="180">
+<circle cx="100" cy="100" r="62" fill="none" stroke="#e9eef6" stroke-width="28"/>
+<circle cx="100" cy="100" r="62" fill="none" stroke="#2563eb" stroke-width="28" stroke-dasharray="136 254" transform="rotate(-90 100 100)"/>
+<circle cx="100" cy="100" r="62" fill="none" stroke="#16a34a" stroke-width="28" stroke-dasharray="78 312" stroke-dashoffset="-136" transform="rotate(-90 100 100)"/>
+<circle cx="100" cy="100" r="62" fill="none" stroke="#f59e0b" stroke-width="28" stroke-dasharray="50 340" stroke-dashoffset="-214" transform="rotate(-90 100 100)"/>
+<circle cx="100" cy="100" r="62" fill="none" stroke="#7c3aed" stroke-width="28" stroke-dasharray="31 359" stroke-dashoffset="-264" transform="rotate(-90 100 100)"/>
+</svg>
+<div style="font-size:13px;line-height:2.1"><div>🔵 المعسل <b>35%</b></div><div>🟢 الفحم والإكسسوارات <b>25%</b></div><div>🟠 الأراجيل <b>20%</b></div><div>🟣 الملابس والملحقات <b>15%</b></div><div>⚪ أخرى <b>5%</b></div></div>
+</div></div>
+</div>
+<div class="panel" style="margin-top:15px"><h3>تنبيهات المخزون</h3><div id="alerts">لا توجد تنبيهات حالياً.</div></div>
+</section>
+
+<section id="products" class="page"><h2>المنتجات والمخزون</h2>
+<div class="form"><div class="row"><div><label>اسم المنتج</label><input id="pName" placeholder="مثال: تبغ تفاحتين"></div><div><label>الكمية</label><input id="pQty" type="number" min="0" value="0"></div></div><div class="row"><div><label>سعر الشراء</label><input id="pCost" type="number" min="0" value="0"></div><div><label>سعر البيع</label><input id="pPrice" type="number" min="0" value="0"></div></div><button class="primary" onclick="addProduct()">حفظ المنتج</button></div>
+<div class="panel" style="margin-top:15px"><div id="productTable"></div></div></section>
+
+<section id="sales" class="page"><h2>المبيعات</h2><div class="form"><label>المنتج</label><select id="saleProduct"></select><label>الكمية</label><input id="saleQty" type="number" min="1" value="1"><button class="primary" onclick="addSale()">تسجيل البيع</button></div><div class="panel" style="margin-top:15px"><div id="salesTable"></div></div></section>
+<section id="purchases" class="page"><h2>المشتريات</h2>
+<div class="form"><div class="row"><div><label>المنتج</label><select id="purchaseProduct"></select></div><div><label>الكمية المضافة</label><input id="purchaseQty" type="number" min="1" value="1"></div></div>
+<div class="row"><div><label>سعر الشراء</label><input id="purchaseCost" type="number" min="0" value="0"></div><div><label>اسم المورد</label><input id="purchaseSupplier" placeholder="مثال: شركة المورد"></div></div>
+<button class="primary" onclick="addPurchase()">حفظ المشتريات وتحديث المخزون</button></div>
+<div class="panel" style="margin-top:15px"><div id="purchaseTable"></div></div></section>
+
+<section id="customers" class="page"><h2>العملاء</h2>
+<div class="form"><div class="row"><div><label>اسم العميل</label><input id="customerName" placeholder="اسم العميل"></div><div><label>الهاتف</label><input id="customerPhone" placeholder="07xxxxxxxx"></div></div>
+<button class="primary" onclick="addCustomer()">إضافة العميل</button></div>
+<div class="panel" style="margin-top:15px"><div id="customerTable"></div></div></section>
+
+<section id="suppliers" class="page"><h2>الموردون</h2>
+<div class="form"><div class="row"><div><label>اسم المورد</label><input id="supplierName" placeholder="اسم المورد"></div><div><label>الهاتف</label><input id="supplierPhone" placeholder="07xxxxxxxx"></div></div>
+<button class="primary" onclick="addSupplier()">إضافة المورد</button></div>
+<div class="panel" style="margin-top:15px"><div id="supplierTable"></div></div></section>
+<section id="reports" class="page"><h2>التقارير والأرباح</h2>
+<div class="cards">
+<div class="card"><div class="label">إجمالي المبيعات</div><div class="num" id="rSales">0</div></div>
+<div class="card"><div class="label">تكلفة البضاعة المباعة</div><div class="num" id="rCost">0 د.أ</div></div>
+<div class="card"><div class="label">الربح الإجمالي</div><div class="num" id="rProfit">0 د.أ</div></div>
+<div class="card"><div class="label">عدد الفواتير</div><div class="num" id="rCount">0</div></div>
+</div>
+<div class="panel" style="margin-top:15px"><h3>فواتير المبيعات</h3><div id="invoiceTable"></div></div>
+</section>
+<footer style="position:fixed;left:0;bottom:0;right:245px;background:#0f1b31;color:#dbe4f3;padding:9px 22px;font-size:11px;display:flex;justify-content:space-between"><span>مخزونك v1.0 — جميع الحقوق محفوظة</span><span>محل أبوها للتبغ ومستلزمات التدخين — عمان</span></footer></main></div>
+<script>
+let products=JSON.parse(localStorage.getItem('mk_products')||'[]'),
+sales=JSON.parse(localStorage.getItem('mk_sales')||'[]'),
+purchases=JSON.parse(localStorage.getItem('mk_purchases')||'[]'),
+customers=JSON.parse(localStorage.getItem('mk_customers')||'[]'),
+suppliers=JSON.parse(localStorage.getItem('mk_suppliers')||'[]');
+const money=n=>Number(n||0).toFixed(2)+' د.أ';
+
+const DEMO_PASSWORD='1234';
+function login(){
+  const u=loginUser.value,p=loginPass.value;
+  if(p!==DEMO_PASSWORD){loginError.textContent='كلمة المرور التجريبية: 1234';return}
+  localStorage.setItem('mk_logged_user',u);
+  applyRole(u);
+  loginScreen.style.display='none';
+}
+function applyRole(u){
+  if(u==='cashier'){
+    loggedUser.textContent='موظف المبيعات';
+    loggedRole.textContent='مبيعات — صلاحيات محدودة';
+    document.querySelectorAll('.menu button').forEach((b,i)=>{if([1,3,4,5,6].includes(i))b.style.display='none'});
+  }else{
+    loggedUser.textContent='إياد ناصر';
+    loggedRole.textContent='مدير النظام';
+  }
+}
+function logout(){
+  localStorage.removeItem('mk_logged_user');
+  location.reload();
+}
+
+function save(){
+localStorage.setItem('mk_products',JSON.stringify(products));
+localStorage.setItem('mk_sales',JSON.stringify(sales));
+localStorage.setItem('mk_purchases',JSON.stringify(purchases));
+localStorage.setItem('mk_customers',JSON.stringify(customers));
+localStorage.setItem('mk_suppliers',JSON.stringify(suppliers));
+render()}
+function show(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.menu button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active');document.getElementById('title').textContent=id==='home'?'لوحة التحكم':document.getElementById(id).querySelector('h2')?.textContent||'مخزونك';render()}
+function addProduct(){let name=pName.value.trim();if(!name)return alert('اكتب اسم المنتج');products.push({id:Date.now(),name,qty:+pQty.value||0,cost:+pCost.value||0,price:+pPrice.value||0});pName.value='';pQty.value=0;pCost.value=0;pPrice.value=0;save()}
+function addSale(){let p=products.find(x=>x.id==saleProduct.value),q=+saleQty.value;if(!p||q<1)return;if(p.qty<q)return alert('الكمية الموجودة غير كافية');p.qty-=q;let total=q*p.price,cost=q*p.cost;sales.push({id:Date.now(),invoice:'INV-'+String(sales.length+1001),product:p.name,qty:q,total,cost,profit:total-cost,date:new Date().toLocaleString('ar-JO')});save();alert('تم تسجيل الفاتورة بنجاح')}
+
+function addPurchase(){
+ let p=products.find(x=>x.id==purchaseProduct.value),q=+purchaseQty.value,c=+purchaseCost.value;
+ if(!p||q<1)return;
+ p.qty+=q;if(c>0)p.cost=c;
+ purchases.push({id:Date.now(),product:p.name,qty:q,cost:c,supplier:purchaseSupplier.value.trim()||'غير محدد',date:new Date().toLocaleString('ar-JO')});
+ purchaseQty.value=1;purchaseCost.value=p.cost;purchaseSupplier.value='';save();alert('تم تحديث المخزون بنجاح');
+}
+function addCustomer(){
+ let n=customerName.value.trim();if(!n)return alert('اكتب اسم العميل');
+ customers.push({id:Date.now(),name:n,phone:customerPhone.value.trim()});customerName.value='';customerPhone.value='';save();
+}
+function addSupplier(){
+ let n=supplierName.value.trim();if(!n)return alert('اكتب اسم المورد');
+ suppliers.push({id:Date.now(),name:n,phone:supplierPhone.value.trim()});supplierName.value='';supplierPhone.value='';save();
+}
+
+
+function openInvoice(id){
+ const s=sales.find(x=>x.id===id);if(!s)return;
+ invoicePreview.innerHTML=`<div style="text-align:center"><h3>فاتورة مبيعات</h3><div style="color:#667085">${s.invoice||'—'}</div></div>
+ <div style="margin-top:18px;display:grid;gap:8px">
+ <div><b>التاريخ:</b> ${s.date}</div>
+ <div><b>المنتج:</b> ${s.product}</div>
+ <div><b>الكمية:</b> ${s.qty}</div>
+ <div><b>سعر الوحدة:</b> ${money(s.total/s.qty)}</div>
+ <div style="border-top:1px solid #eee;padding-top:10px;font-size:20px"><b>الإجمالي: ${money(s.total)}</b></div>
+ </div>`;
+ invoiceModal.style.display='block';
+}
+function closeInvoice(){invoiceModal.style.display='none'}
+async function shareInvoice(){
+ const text=`مخزونك\\nفاتورة ${invoicePreview.innerText}`;
+ if(navigator.share){try{await navigator.share({title:'فاتورة مخزونك',text})}catch(e){}}
+ else alert('المشاركة غير متاحة في هذا المتصفح.');
+}
+
+function del(id){products=products.filter(x=>x.id!==id);save()}
+function filterProducts(v){render(v)}
+function render(filter=''){
+let ps=products.filter(p=>p.name.includes(filter));nProducts.textContent=products.length;nSales.textContent=money(sales.reduce((a,s)=>a+s.total,0));nValue.textContent=money(products.reduce((a,p)=>a+p.qty*p.cost,0));nLow.textContent=products.filter(p=>p.qty<=5).length;let totalSales=sales.reduce((a,s)=>a+s.total,0), totalCost=sales.reduce((a,s)=>a+(s.cost||0),0), totalProfit=sales.reduce((a,s)=>a+(s.profit??(s.total-(s.cost||0))),0);
+rSales.textContent=money(totalSales);rCost.textContent=money(totalCost);rProfit.textContent=money(totalProfit);rCount.textContent=sales.length;
+let low=products.filter(p=>p.qty<=5);alerts.innerHTML=low.length?low.map(p=>`<div class="alert">⚠️ <b>${p.name}</b> — المتبقي ${p.qty}</div>`).join(''):'لا توجد تنبيهات حالياً.';
+productTable.innerHTML=ps.length?`<table><tr><th>المنتج</th><th>الكمية</th><th>شراء</th><th>بيع</th><th>الحالة</th><th></th></tr>${ps.map(p=>`<tr><td><b>${p.name}</b></td><td>${p.qty}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td><span class="badge ${p.qty>5?'ok':''}">${p.qty<=5?'منخفض':'متوفر'}</span></td><td><button class="primary danger" onclick="del(${p.id})">حذف</button></td></tr>`).join('')}</table>`:'<p class="sub">لا توجد منتجات.</p>';
+saleProduct.innerHTML=products.map(p=>`<option value="${p.id}">${p.name} — ${p.qty} متوفر</option>`).join('');
+purchaseProduct.innerHTML=products.map(p=>`<option value="${p.id}">${p.name} — ${p.qty} متوفر</option>`).join('');
+if(products.length && !purchaseCost.value) purchaseCost.value=products[0].cost;
+purchaseTable.innerHTML=purchases.length?`<table><tr><th>المنتج</th><th>الكمية</th><th>سعر الشراء</th><th>المورد</th><th>التاريخ</th></tr>${purchases.slice().reverse().map(p=>`<tr><td>${p.product}</td><td>${p.qty}</td><td>${money(p.cost)}</td><td>${p.supplier}</td><td>${p.date}</td></tr>`).join('')}</table>`:'<p class="sub">لا توجد مشتريات.</p>';
+customerTable.innerHTML=customers.length?`<table><tr><th>العميل</th><th>الهاتف</th></tr>${customers.map(c=>`<tr><td>${c.name}</td><td>${c.phone||'—'}</td></tr>`).join('')}</table>`:'<p class="sub">لا يوجد عملاء.</p>';
+supplierTable.innerHTML=suppliers.length?`<table><tr><th>المورد</th><th>الهاتف</th></tr>${suppliers.map(s=>`<tr><td>${s.name}</td><td>${s.phone||'—'}</td></tr>`).join('')}</table>`:'<p class="sub">لا يوجد موردون.</p>';
+salesTable.innerHTML=sales.length?`<table><tr><th>المنتج</th><th>الكمية</th><th>الإجمالي</th><th>التاريخ</th></tr>${sales.slice().reverse().map(s=>`<tr><td>${s.product}</td><td>${s.qty}</td><td>${money(s.total)}</td><td>${s.date}</td></tr>`).join('')}</table>`:'<p class="sub">لا توجد مبيعات.</p>';
+lowTable.innerHTML=products.filter(p=>p.qty<=5).length?`<table><tr><th>المنتج</th><th>الكمية الحالية</th><th>الحد الأدنى</th><th>الحالة</th></tr>${products.filter(p=>p.qty<=5).slice(0,6).map(p=>`<tr><td>${p.name}</td><td>${p.qty}</td><td>5</td><td><span class="badge">منخفض</span></td></tr>`).join('')}</table>`:'<p class="sub">لا توجد منتجات منخفضة حالياً.</p>';
+invoiceTable.innerHTML=sales.length?`<table><tr><th>الفاتورة</th><th>المنتج</th><th>الإجمالي</th><th>الربح</th><th>التاريخ</th><th></th></tr>${sales.slice().reverse().map(s=>`<tr><td>${s.invoice||'—'}</td><td>${s.product}</td><td>${money(s.total)}</td><td>${money(s.profit??(s.total-(s.cost||0)))}</td><td>${s.date}</td><td><button class="primary" onclick="openInvoice(${s.id})">عرض</button></td></tr>`).join('')}</table>`:'<p class="sub">لا توجد فواتير.</p>';
+recentSales.innerHTML=sales.length?`<table><tr><th>المنتج</th><th>الكمية</th><th>المجموع</th></tr>${sales.slice(-5).reverse().map(s=>`<tr><td>${s.product}</td><td>${s.qty}</td><td>${money(s.total)}</td></tr>`).join('')}</table>`:'<p class="sub">لم تسجل مبيعات بعد.</p>';
+}
+const currentUser=localStorage.getItem('mk_logged_user');
+if(currentUser){loginScreen.style.display='none';applyRole(currentUser)}
+render();
+</script>
+</body></html>
